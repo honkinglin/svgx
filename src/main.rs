@@ -2,7 +2,10 @@ use clap::Parser;
 use std::fs;
 use std::path::PathBuf;
 use svgx::parser;
-use svgx::plugins::{Plugin, RemoveComments};
+use svgx::plugins::{
+    CleanupAttrs, Plugin, RemoveComments, RemoveDoctype, RemoveEditorsNSData, RemoveMetadata,
+    RemoveXMLProcInst,
+};
 use svgx::printer;
 
 #[derive(Parser, Debug)]
@@ -24,7 +27,16 @@ fn main() {
     match parser::parse(&text) {
         Ok(mut doc) => {
             // Apply plugins
-            let plugins: Vec<Box<dyn Plugin>> = vec![Box::new(RemoveComments)];
+            // Order matters: structural cleaning first, then content cleaning
+            // Note: RemoveEditorsNSData should probably run early to remove large chunks of unused data
+            let plugins: Vec<Box<dyn Plugin>> = vec![
+                Box::new(RemoveDoctype),
+                Box::new(RemoveXMLProcInst),
+                Box::new(RemoveComments),
+                Box::new(RemoveMetadata),
+                Box::new(RemoveEditorsNSData),
+                Box::new(CleanupAttrs),
+            ];
 
             for plugin in plugins {
                 plugin.apply(&mut doc);
