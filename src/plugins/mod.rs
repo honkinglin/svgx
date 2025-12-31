@@ -26,6 +26,10 @@ pub mod remove_desc;
 pub mod remove_empty_attrs;
 pub mod remove_title;
 
+pub mod convert_style_to_attrs;
+pub mod convert_transform;
+pub mod merge_paths;
+
 pub use cleanup_attrs::CleanupAttrs;
 pub use convert_colors::ConvertColors;
 pub use remove_comments::RemoveComments;
@@ -46,3 +50,7 @@ pub use convert_shape_to_path::ConvertShapeToPath;
 pub use remove_desc::RemoveDesc;
 pub use remove_empty_attrs::RemoveEmptyAttrs;
 pub use remove_title::RemoveTitle;
+
+pub use convert_style_to_attrs::ConvertStyleToAttrs;
+pub use convert_transform::ConvertTransform;
+pub use merge_paths::MergePaths;

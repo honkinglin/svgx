@@ -4,9 +4,9 @@ use std::path::PathBuf;
 use svgx::parser;
 use svgx::plugins::{
     CleanupAttrs, CleanupIds, CleanupNumericValues, CollapseGroups, ConvertColors, ConvertPathData,
-    ConvertShapeToPath, Plugin, RemoveComments, RemoveDesc, RemoveDoctype, RemoveEditorsNSData,
-    RemoveEmptyAttrs, RemoveEmptyText, RemoveHiddenElems, RemoveMetadata, RemoveTitle,
-    RemoveUselessDefs, RemoveXMLProcInst,
+    ConvertShapeToPath, ConvertStyleToAttrs, ConvertTransform, MergePaths, Plugin, RemoveComments,
+    RemoveDesc, RemoveDoctype, RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyText,
+    RemoveHiddenElems, RemoveMetadata, RemoveTitle, RemoveUselessDefs, RemoveXMLProcInst,
 };
 use svgx::printer;
 
@@ -29,13 +29,7 @@ fn main() {
     match parser::parse(&text) {
         Ok(mut doc) => {
             // Apply plugins
-            match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                // Should we catch panics?
-            })) {
-                _ => {}
-            }
-
-            // Plugin list
+            // Ordered Pipeline:
             let plugins: Vec<Box<dyn Plugin>> = vec![
                 Box::new(RemoveDoctype),
                 Box::new(RemoveXMLProcInst),
@@ -44,6 +38,7 @@ fn main() {
                 Box::new(RemoveTitle),
                 Box::new(RemoveDesc),
                 Box::new(RemoveEditorsNSData),
+                Box::new(ConvertStyleToAttrs), // Move styles to attributes so other plugins can see them
                 Box::new(CleanupAttrs),
                 Box::new(RemoveEmptyAttrs),
                 Box::new(CleanupIds),
@@ -52,13 +47,15 @@ fn main() {
                 Box::new(RemoveEmptyText),
                 Box::new(CollapseGroups),
                 Box::new(ConvertShapeToPath),
-                Box::new(ConvertPathData::default()), // Optimize paths
+                Box::new(ConvertPathData::default()),
+                Box::new(ConvertTransform::default()),
+                Box::new(MergePaths), // Merge after converting shapes and transforms
                 Box::new(ConvertColors),
-                Box::new(CleanupNumericValues::default()),
+                Box::new(CleanupNumericValues::default()), // Optimize all numbers at end
             ];
 
             for plugin in plugins {
-                println!("Running plugin: {}", std::any::type_name_of_val(&*plugin));
+                // println!("Running plugin: {}", std::any::type_name_of_val(&*plugin));
                 plugin.apply(&mut doc);
             }
 

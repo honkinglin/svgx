@@ -1,6 +1,5 @@
 use crate::plugins::Plugin;
 use crate::tree::{Document, Node};
-use std::fmt::Write;
 
 pub struct ConvertPathData {
     pub float_precision: usize,
