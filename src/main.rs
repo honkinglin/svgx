@@ -3,10 +3,11 @@ use std::fs;
 use std::path::PathBuf;
 use svgx::parser;
 use svgx::plugins::{
-    CleanupAttrs, CleanupIds, CleanupNumericValues, CollapseGroups, ConvertColors, ConvertPathData,
-    ConvertShapeToPath, ConvertStyleToAttrs, ConvertTransform, MergePaths, Plugin, RemoveComments,
-    RemoveDesc, RemoveDoctype, RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyText,
-    RemoveHiddenElems, RemoveMetadata, RemoveTitle, RemoveUselessDefs, RemoveXMLProcInst,
+    CleanupAttrs, CleanupIds, CleanupListOfValues, CleanupNumericValues, CollapseGroups,
+    ConvertColors, ConvertPathData, ConvertShapeToPath, ConvertStyleToAttrs, ConvertTransform,
+    MergePaths, Plugin, RemoveComments, RemoveDesc, RemoveDoctype, RemoveEditorsNSData,
+    RemoveEmptyAttrs, RemoveEmptyText, RemoveHiddenElems, RemoveMetadata, RemoveTitle,
+    RemoveUnknownsAndDefaults, RemoveUselessDefs, RemoveXMLProcInst, SortAttrs,
 };
 use svgx::printer;
 
@@ -38,9 +39,8 @@ fn main() {
                 Box::new(RemoveTitle),
                 Box::new(RemoveDesc),
                 Box::new(RemoveEditorsNSData),
-                Box::new(ConvertStyleToAttrs), // Move styles to attributes so other plugins can see them
+                Box::new(ConvertStyleToAttrs),
                 Box::new(CleanupAttrs),
-                Box::new(RemoveEmptyAttrs),
                 Box::new(CleanupIds),
                 Box::new(RemoveUselessDefs),
                 Box::new(RemoveHiddenElems),
@@ -49,9 +49,13 @@ fn main() {
                 Box::new(ConvertShapeToPath),
                 Box::new(ConvertPathData::default()),
                 Box::new(ConvertTransform::default()),
-                Box::new(MergePaths), // Merge after converting shapes and transforms
+                Box::new(MergePaths),
                 Box::new(ConvertColors),
-                Box::new(CleanupNumericValues::default()), // Optimize all numbers at end
+                Box::new(CleanupNumericValues::default()),
+                Box::new(CleanupListOfValues::default()), // Clean lists (viewBox)
+                Box::new(RemoveUnknownsAndDefaults::default()), // Remove defaults last (after numerical cleanup to match 0 vs 0.0)
+                Box::new(RemoveEmptyAttrs),                     // Clean empty last
+                Box::new(SortAttrs), // Final Sort for deterministic output and compression
             ];
 
             for plugin in plugins {

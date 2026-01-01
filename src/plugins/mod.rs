@@ -30,6 +30,10 @@ pub mod convert_style_to_attrs;
 pub mod convert_transform;
 pub mod merge_paths;
 
+pub mod cleanup_list_of_values;
+pub mod remove_unknowns_and_defaults;
+pub mod sort_attrs;
+
 pub use cleanup_attrs::CleanupAttrs;
 pub use convert_colors::ConvertColors;
 pub use remove_comments::RemoveComments;
@@ -54,3 +58,7 @@ pub use remove_title::RemoveTitle;
 pub use convert_style_to_attrs::ConvertStyleToAttrs;
 pub use convert_transform::ConvertTransform;
 pub use merge_paths::MergePaths;
+
+pub use cleanup_list_of_values::CleanupListOfValues;
+pub use remove_unknowns_and_defaults::RemoveUnknownsAndDefaults;
+pub use sort_attrs::SortAttrs;
