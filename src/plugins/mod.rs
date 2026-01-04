@@ -38,6 +38,10 @@ pub mod remove_dimensions;
 pub mod remove_raster_images;
 pub mod remove_script_element;
 
+pub mod convert_ellipse_to_circle;
+pub mod remove_style_element;
+pub mod remove_useless_stroke_and_fill;
+
 pub use cleanup_attrs::CleanupAttrs;
 pub use convert_colors::ConvertColors;
 pub use remove_comments::RemoveComments;
@@ -70,3 +74,7 @@ pub use sort_attrs::SortAttrs;
 pub use remove_dimensions::RemoveDimensions;
 pub use remove_raster_images::RemoveRasterImages;
 pub use remove_script_element::RemoveScriptElement;
+
+pub use convert_ellipse_to_circle::ConvertEllipseToCircle;
+pub use remove_style_element::RemoveStyleElement;
+pub use remove_useless_stroke_and_fill::RemoveUselessStrokeAndFill;

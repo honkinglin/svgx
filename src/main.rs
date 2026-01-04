@@ -4,11 +4,12 @@ use std::path::PathBuf;
 use svgx::parser;
 use svgx::plugins::{
     CleanupAttrs, CleanupIds, CleanupListOfValues, CleanupNumericValues, CollapseGroups,
-    ConvertColors, ConvertPathData, ConvertShapeToPath, ConvertStyleToAttrs, ConvertTransform,
-    MergePaths, Plugin, RemoveComments, RemoveDesc, RemoveDimensions, RemoveDoctype,
-    RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyText, RemoveHiddenElems, RemoveMetadata,
-    RemoveRasterImages, RemoveScriptElement, RemoveTitle, RemoveUnknownsAndDefaults,
-    RemoveUselessDefs, RemoveXMLProcInst, SortAttrs,
+    ConvertColors, ConvertEllipseToCircle, ConvertPathData, ConvertShapeToPath,
+    ConvertStyleToAttrs, ConvertTransform, MergePaths, Plugin, RemoveComments, RemoveDesc,
+    RemoveDimensions, RemoveDoctype, RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyText,
+    RemoveHiddenElems, RemoveMetadata, RemoveRasterImages, RemoveScriptElement, RemoveStyleElement,
+    RemoveTitle, RemoveUnknownsAndDefaults, RemoveUselessDefs, RemoveUselessStrokeAndFill,
+    RemoveXMLProcInst, SortAttrs,
 };
 use svgx::printer;
 
@@ -40,16 +41,19 @@ fn main() {
                 Box::new(RemoveTitle),
                 Box::new(RemoveDesc),
                 Box::new(RemoveEditorsNSData),
-                Box::new(RemoveScriptElement), // Safety first
+                Box::new(RemoveScriptElement),
                 Box::new(RemoveRasterImages),
+                Box::new(RemoveStyleElement),
                 Box::new(ConvertStyleToAttrs),
                 Box::new(CleanupAttrs),
-                Box::new(RemoveDimensions), // Make responsive if checking viewBox
+                Box::new(RemoveDimensions),
                 Box::new(CleanupIds),
                 Box::new(RemoveUselessDefs),
                 Box::new(RemoveHiddenElems),
                 Box::new(RemoveEmptyText),
                 Box::new(CollapseGroups),
+                Box::new(RemoveUselessStrokeAndFill),
+                Box::new(ConvertEllipseToCircle),
                 Box::new(ConvertShapeToPath),
                 Box::new(ConvertPathData::default()),
                 Box::new(ConvertTransform::default()),
