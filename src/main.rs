@@ -7,10 +7,10 @@ use svgx::plugins::{
     ConvertColors, ConvertEllipseToCircle, ConvertOneStopGradients, ConvertPathData,
     ConvertShapeToPath, ConvertStyleToAttrs, ConvertTransform, MergePaths, MoveElemsAttrsToGroup,
     MoveGroupAttrsToElems, Plugin, RemoveComments, RemoveDesc, RemoveDimensions, RemoveDoctype,
-    RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyText, RemoveHiddenElems, RemoveMetadata,
-    RemoveRasterImages, RemoveScriptElement, RemoveStyleElement, RemoveTitle,
-    RemoveUnknownsAndDefaults, RemoveUselessDefs, RemoveUselessStrokeAndFill, RemoveXMLProcInst,
-    SortAttrs,
+    RemoveEditorsNSData, RemoveEmptyAttrs, RemoveEmptyContainers, RemoveEmptyText,
+    RemoveHiddenElems, RemoveMetadata, RemoveRasterImages, RemoveScriptElement, RemoveStyleElement,
+    RemoveTitle, RemoveUnknownsAndDefaults, RemoveUnusedNS, RemoveUselessDefs,
+    RemoveUselessStrokeAndFill, RemoveXMLProcInst, SortAttrs, SortDefsChildren,
 };
 use svgx::printer;
 
@@ -48,15 +48,12 @@ fn main() {
                 Box::new(ConvertStyleToAttrs),
                 Box::new(CleanupAttrs),
                 Box::new(RemoveDimensions),
-                // Advanced structure ops
                 Box::new(MoveGroupAttrsToElems),
                 Box::new(MoveElemsAttrsToGroup),
                 Box::new(ConvertOneStopGradients),
-                // Cleanup IDs before we optimize references?
-                // Actually convertOneStopGradients removes refs, so it should run before CleanupIds removes the defs?
-                // Wait, ConvertOneStop just replaces refs. If we run cleanupIDs efficiently it should find unused ones.
                 Box::new(CleanupIds),
                 Box::new(RemoveUselessDefs),
+                Box::new(RemoveEmptyContainers), // Remove Empty Containers (including defs)
                 Box::new(RemoveHiddenElems),
                 Box::new(RemoveEmptyText),
                 Box::new(CollapseGroups),
@@ -71,7 +68,9 @@ fn main() {
                 Box::new(CleanupListOfValues::default()),
                 Box::new(RemoveUnknownsAndDefaults::default()),
                 Box::new(RemoveEmptyAttrs),
+                Box::new(RemoveUnusedNS), // Late? Check usage
                 Box::new(SortAttrs),
+                Box::new(SortDefsChildren),
             ];
 
             for plugin in plugins {
