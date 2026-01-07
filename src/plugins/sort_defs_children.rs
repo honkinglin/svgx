@@ -1,6 +1,5 @@
 use crate::plugins::Plugin;
 use crate::tree::{Document, Node};
-use std::collections::HashMap;
 
 pub struct SortDefsChildren;
 

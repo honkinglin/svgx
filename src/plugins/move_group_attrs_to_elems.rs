@@ -19,7 +19,7 @@ fn process_nodes(nodes: &mut Vec<Node>) {
             if elem.name == "g" {
                 // Try to move attributes to children
                 if !elem.children.is_empty() {
-                    let mut cached_transform = elem.attributes.get("transform").cloned();
+                    let cached_transform = elem.attributes.get("transform").cloned();
 
                     // inheritable attributes
                     // If we move them, we remove them from group.

@@ -8,3 +8,10 @@ xmlparser = "0.13"
 clap = { version = "4.4", features = ["derive"] }
 indexmap = "2.1"
 regex = "1.12.2"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "bench_main"
+harness = false
