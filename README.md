@@ -189,6 +189,29 @@ This script will:
 3. Run example projects (`npm/examples/`) to verify real-world usage.
 
 
+
+## 🧪 Testing
+
+`svgtidy` uses a unified test suite to ensure consistency between the Rust core and the WASM/JS implementations.
+
+### Shared Test Cases
+Test cases are located in the `test-cases/` directory at the project root. To add a new test case, simply add an SVG file to this directory.
+
+### Running Tests
+
+**Rust Core**:
+```bash
+cargo test
+```
+This runs unit tests and the integration test `tests/integration_test.rs`, which verifies all SVGs in `test-cases/`.
+
+**JS/WASM**:
+```bash
+cd npm
+npm run test:suite
+```
+This runs the Node.js test script `npm/test-suite.mjs`, which also verifies all SVGs in `test-cases/` using the compiled WASM module.
+
 ## 🏗 Architecture
 
 The optimization pipeline is purely AST-based:
