@@ -118,7 +118,7 @@ Tests performed on a MacBook Pro (M3).
 `svgtidy` provides a WASM interface for web usage.
 
 ```bash
-wasm-pack build --target web
+wasm-pack build --target web --out-dir npm/svgtidy-wasm
 ```
 
 **JS Example:**

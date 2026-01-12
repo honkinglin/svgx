@@ -1,0 +1,127 @@
+name: NPM Publish
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "npm/**"
+      - "src/**"
+      - "Cargo.toml"
+
+jobs:
+  publish-wasm:
+    runs-on: ubuntu-latest
+    outputs:
+      wasm_version: ${{ steps.get-version.outputs.version }}
+      published: ${{ steps.check-publish.outputs.published }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Cargo Version
+        id: get-version
+        run: |
+          # Extract version from Cargo.toml (assuming standard format)
+          VERSION=$(grep '^version = ' Cargo.toml | cut -d '"' -f 2)
+          echo "Detected Cargo version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version exists on NPM
+        id: check-publish
+        run: |
+          PACKAGE_NAME="svgtidy"
+          VERSION="${{ steps.get-version.outputs.version }}"
+          echo "Checking $PACKAGE_NAME@$VERSION"
+
+          if npm view "$PACKAGE_NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "Version $VERSION already exists. Skipping build and publish."
+            echo "published=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version $VERSION is new. Proceeding to build and publish."
+            echo "published=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install Rust
+        if: steps.check-publish.outputs.published == 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        if: steps.check-publish.outputs.published == 'true'
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build WASM
+        if: steps.check-publish.outputs.published == 'true'
+        run: wasm-pack build --target web --out-dir npm/svgtidy-wasm
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish to NPM
+        if: steps.check-publish.outputs.published == 'true'
+        run: |
+          cd npm/svgtidy-wasm
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-plugins:
+    needs: publish-wasm
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [vite-plugin-svgtidy, svgtidy-loader]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update Dependency
+        run: |
+          # Get the WASM version from the local source of truth
+          WASM_VERSION="${{ needs.publish-wasm.outputs.wasm_version }}"
+
+          echo "Updating ${{ matrix.package }} to use svgtidy@$WASM_VERSION"
+
+          cd npm/${{ matrix.package }}
+
+          # Set the dependency alias: imports of 'svgtidy-wasm' will resolve to 'svgtidy' package
+          npm pkg set dependencies.svgtidy-wasm="npm:svgtidy@$WASM_VERSION"
+
+      - name: Install dependencies
+        run: |
+          cd npm/${{ matrix.package }}
+          npm install
+
+      - name: Build
+        run: |
+          cd npm/${{ matrix.package }}
+          npm run build
+
+      - name: Check Publish Needed
+        id: check
+        run: |
+          cd npm/${{ matrix.package }}
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VERSION" version >/dev/null 2>&1; then
+             echo "published=false" >> $GITHUB_OUTPUT
+          else
+             echo "published=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish
+        if: steps.check.outputs.published == 'true'
+        run: |
+          cd npm/${{ matrix.package }}
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
