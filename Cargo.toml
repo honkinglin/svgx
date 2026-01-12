@@ -2,6 +2,13 @@
 name = "svgtidy"
 version = "0.1.0"
 edition = "2021"
+description = "High-performance SVG optimizer written in Rust"
+authors = ["Kyrie Lin"]
+repository = "https://github.com/honkinglin/svgtidy"
+license = "MIT"
+readme = "README.md"
+keywords = ["svg", "optimizer", "wasm", "webassembly"]
+categories = ["multimedia::images", "wasm"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
