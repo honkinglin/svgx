@@ -130,6 +130,65 @@ const output = optimize('<svg>...</svg>');
 console.log(output);
 ```
 
+## 📦 Javascript Ecosystem
+
+`svgtidy` is available for the Javascript ecosystem via NPM.
+
+### Vite Plugin
+```bash
+npm install vite-plugin-svgtidy
+```
+```javascript
+// vite.config.js
+import svgtidy from 'vite-plugin-svgtidy';
+
+export default {
+  plugins: [svgtidy()]
+}
+```
+
+### Webpack Loader
+```bash
+npm install svgtidy-loader
+```
+```javascript
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.svg$/,
+        use: [
+          { loader: 'svgtidy-loader' }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## 🛠 Development of Plugins
+
+The JS packages are located in the `npm/` directory.
+
+### Build WASM Core
+First, build the core WASM module that plugins depend on:
+```bash
+wasm-pack build --target bundler --out-dir npm/svgtidy-wasm
+```
+
+### Build & Test Plugins
+To verify the plugins work correctly with the built WASM:
+```bash
+cd npm
+node verify.mjs
+```
+This script will:
+1. Verify the bare WASM module.
+2. Build `vite-plugin-svgtidy` and `svgtidy-loader`.
+3. Run example projects (`npm/examples/`) to verify real-world usage.
+
+
 ## 🏗 Architecture
 
 The optimization pipeline is purely AST-based:

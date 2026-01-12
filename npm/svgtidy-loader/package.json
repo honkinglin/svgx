@@ -1,0 +1,31 @@
+{
+  "name": "svgtidy-loader",
+  "version": "0.1.0",
+  "description": "Webpack loader for svgtidy",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts"
+  },
+  "keywords": [
+    "webpack",
+    "loader",
+    "svg",
+    "optimizer",
+    "svgtidy"
+  ],
+  "author": "Kyrie Lin",
+  "license": "MIT",
+  "dependencies": {
+    "svgtidy-wasm": "file:../svgtidy-wasm"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.0.0"
+  },
+  "peerDependencies": {
+    "webpack": ">=5.0.0"
+  }
+}

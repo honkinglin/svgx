@@ -1,0 +1,15 @@
+{
+  "name": "vite-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "vite-plugin-svgtidy": "file:../../vite-plugin-svgtidy"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
