@@ -1,0 +1,40 @@
+.header {
+  height: 64px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  height: 32px;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 1.25rem;
+  font-family: var(--font-sans);
+}
+
+.github-link {
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+}
+
+.github-link:hover {
+  color: var(--color-text);
+}
