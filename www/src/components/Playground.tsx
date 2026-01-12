@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useDeferredValue } from 'react';
 import { optimize } from 'svgtidy';
 import { Copy, Check, FileCode, Image as ImageIcon } from 'lucide-react';
 import './Playground.css';
@@ -11,26 +11,22 @@ const DEFAULT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 10
 
 export function Playground() {
   const [input, setInput] = useState(DEFAULT_SVG);
-  const [output, setOutput] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const deferredInput = useDeferredValue(input);
   const [copied, setCopied] = useState(false);
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
 
-  useEffect(() => {
-    try {
-      if (!input.trim()) {
-        setOutput('');
-        setError(null);
-        return;
-      }
-      const result = optimize(input);
-      setOutput(result);
-      setError(null);
-    } catch (err: any) {
-      console.error(err);
-      setError("Failed to optimize SVG. Ensure input is valid XML.");
+  const { output, error } = useMemo(() => {
+    if (!deferredInput.trim()) {
+      return { output: '', error: null };
     }
-  }, [input]);
+    try {
+      const result = optimize(deferredInput);
+      return { output: result, error: null };
+    } catch (err) {
+      console.error(err);
+      return { output: '', error: "Failed to optimize SVG. Ensure input is valid XML." };
+    }
+  }, [deferredInput]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(output);
@@ -39,7 +35,7 @@ export function Playground() {
   };
 
   const stats = {
-    original: new Blob([input]).size,
+    original: new Blob([deferredInput]).size,
     optimized: new Blob([output]).size,
   };
   const savings = stats.original > 0 

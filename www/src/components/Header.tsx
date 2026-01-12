@@ -5,9 +5,9 @@ export function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        <div className="logo-section">
+        <a href="/" className="logo-section">
           <img src="/logo.svg" alt="SvgTidy Logo" className="logo-img" />
-        </div>
+        </a>
         <a 
           href="https://github.com/honkinglin/svgtidy" 
           target="_blank" 
