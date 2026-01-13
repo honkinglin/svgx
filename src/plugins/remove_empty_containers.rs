@@ -53,14 +53,14 @@ mod tests {
     #[test]
     fn test_remove_empty_g() {
         let input = "<svg><g/></svg>";
-        let expected = "<svg></svg>"; // Expect <svg/> or <svg></svg> depending on printer (parser produces children vec, if empty, printer prints short if no children)
-                                      // Actually printer prints <svg></svg> (with children). Wait.
-                                      // My printer always uses self-closing for empty? No?
-                                      // Let's check expected. Parser returns Node::Element("svg", [], []).
-                                      // Printer: if children empty, print self-closing "/>".
-                                      // Wait, input <svg><g/></svg>. svg has 1 child (g). g has 0 children.
-                                      // removeEmptyContainers removes g. svg has 0 children.
-                                      // Printer prints <svg/> (self closing).
+        let _expected = "<svg></svg>"; // Expect <svg/> or <svg></svg> depending on printer (parser produces children vec, if empty, printer prints short if no children)
+                                       // Actually printer prints <svg></svg> (with children). Wait.
+                                       // My printer always uses self-closing for empty? No?
+                                       // Let's check expected. Parser returns Node::Element("svg", [], []).
+                                       // Printer: if children empty, print self-closing "/>".
+                                       // Wait, input <svg><g/></svg>. svg has 1 child (g). g has 0 children.
+                                       // removeEmptyContainers removes g. svg has 0 children.
+                                       // Printer prints <svg/> (self closing).
 
         let mut doc = parser::parse(input).unwrap();
         RemoveEmptyContainers.apply(&mut doc);

@@ -2,6 +2,7 @@
 
 ![CI](https://github.com/honkinglin/svgx/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Crates.io Version](https://img.shields.io/crates/v/svgtidy)
 ![NPM Version](https://img.shields.io/npm/v/svgtidy)
 
 > **svgtidy** is a high-performance SVG optimizer written in Rust.
@@ -48,9 +49,13 @@ console.log(optimized);
 Install the binary tool using Rust's cargo:
 
 ```bash
-cargo install --path .
+# Install from crates.io (Recommended)
+cargo install svgtidy
+
 # Or build from source
-cargo build --release
+git clone https://github.com/honkinglin/svgtidy.git
+cd svgtidy
+cargo install --path .
 ```
 
 **Usage:**

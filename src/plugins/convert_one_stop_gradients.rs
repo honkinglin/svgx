@@ -99,7 +99,7 @@ mod tests {
         <rect fill="url(#g1)"/>
         </svg>"#;
 
-        let expected = r#"<svg>
+        let _expected = r#"<svg>
         <defs>
             <linearGradient id="g1"><stop stop-color="red"/></linearGradient>
         </defs>
