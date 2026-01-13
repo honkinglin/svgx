@@ -280,38 +280,92 @@ fn parse_path_data(d: &str) -> Vec<Command> {
                     cur_y = ny;
                 }
             }
-            'A' => {
-                while let (Some(rx), Some(ry), Some(rot), Some(la), Some(sf), Some(x), Some(y)) = (
-                    lexer.read_number(),
-                    lexer.read_number(),
-                    lexer.read_number(),
-                    lexer.read_flag(),
-                    lexer.read_flag(),
-                    lexer.read_number(),
-                    lexer.read_number(),
-                ) {
-                    commands.push(Command::Arc(rx, ry, rot, la, sf, x, y));
-                    cur_x = x;
-                    cur_y = y;
+            'A' => loop {
+                let rx = lexer.read_number();
+                if rx.is_none() {
+                    break;
                 }
-            }
-            'a' => {
-                while let (Some(rx), Some(ry), Some(rot), Some(la), Some(sf), Some(dx), Some(dy)) = (
-                    lexer.read_number(),
-                    lexer.read_number(),
-                    lexer.read_number(),
-                    lexer.read_flag(),
-                    lexer.read_flag(),
-                    lexer.read_number(),
-                    lexer.read_number(),
-                ) {
-                    let nx = cur_x + dx;
-                    let ny = cur_y + dy;
-                    commands.push(Command::Arc(rx, ry, rot, la, sf, nx, ny));
-                    cur_x = nx;
-                    cur_y = ny;
+                let ry = lexer.read_number();
+                if ry.is_none() {
+                    break;
                 }
-            }
+                let rot = lexer.read_number();
+                if rot.is_none() {
+                    break;
+                }
+                let la = lexer.read_flag();
+                if la.is_none() {
+                    break;
+                }
+                let sf = lexer.read_flag();
+                if sf.is_none() {
+                    break;
+                }
+                let x = lexer.read_number();
+                if x.is_none() {
+                    break;
+                }
+                let y = lexer.read_number();
+                if y.is_none() {
+                    break;
+                }
+
+                let rx = rx.unwrap();
+                let ry = ry.unwrap();
+                let rot = rot.unwrap();
+                let la = la.unwrap();
+                let sf = sf.unwrap();
+                let x = x.unwrap();
+                let y = y.unwrap();
+
+                commands.push(Command::Arc(rx, ry, rot, la, sf, x, y));
+                cur_x = x;
+                cur_y = y;
+            },
+            'a' => loop {
+                let rx = lexer.read_number();
+                if rx.is_none() {
+                    break;
+                }
+                let ry = lexer.read_number();
+                if ry.is_none() {
+                    break;
+                }
+                let rot = lexer.read_number();
+                if rot.is_none() {
+                    break;
+                }
+                let la = lexer.read_flag();
+                if la.is_none() {
+                    break;
+                }
+                let sf = lexer.read_flag();
+                if sf.is_none() {
+                    break;
+                }
+                let dx = lexer.read_number();
+                if dx.is_none() {
+                    break;
+                }
+                let dy = lexer.read_number();
+                if dy.is_none() {
+                    break;
+                }
+
+                let rx = rx.unwrap();
+                let ry = ry.unwrap();
+                let rot = rot.unwrap();
+                let la = la.unwrap();
+                let sf = sf.unwrap();
+                let dx = dx.unwrap();
+                let dy = dy.unwrap();
+
+                let nx = cur_x + dx;
+                let ny = cur_y + dy;
+                commands.push(Command::Arc(rx, ry, rot, la, sf, nx, ny));
+                cur_x = nx;
+                cur_y = ny;
+            },
             _ => {
                 break;
             }
