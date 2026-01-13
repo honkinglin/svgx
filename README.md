@@ -157,8 +157,6 @@ Options:
 
 ## 📊 Benchmarks
 
-Tests performed on a MacBook Pro (M3).
-
 | Scenario | Input Size | svgtidy Time | vs SVGO (Node) |
 | :--- | :--- | :--- | :--- |
 | **Simple Icon** | ~0.5 KB | **~16 µs** | **~100x Faster** |
