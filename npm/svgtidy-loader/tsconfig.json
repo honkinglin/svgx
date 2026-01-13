@@ -6,9 +6,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": {
-      "svgtidy-wasm": ["../svgtidy-wasm"]
-    }
+    "paths": {}
   },
   "include": ["src/**/*"]
 }

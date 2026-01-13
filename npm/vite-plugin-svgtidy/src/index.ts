@@ -1,14 +1,11 @@
 import type { Plugin } from 'vite';
-import { optimize, initWasm } from './wasm-load';
+import { optimize } from 'svgtidy';
 import fs from 'node:fs';
 
 export default function svgtidyPlugin(options: any = {}): Plugin {
   return {
     name: 'vite-plugin-svgtidy',
     enforce: 'pre',
-    async buildStart() {
-        await initWasm();
-    },
     async transform(code: string, id: string) {
       if (id.endsWith('.svg')) {
         // Only optimize if it's imported as raw SVG or handled by another loader?
